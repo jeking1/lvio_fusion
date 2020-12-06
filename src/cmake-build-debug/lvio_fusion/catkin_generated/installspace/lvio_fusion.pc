@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: lvio_fusion
-Description: Description of lvio_fusion
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -llvio_fusion
-Requires: 

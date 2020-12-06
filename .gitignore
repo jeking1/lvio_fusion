@@ -1,9 +1,0 @@
-build
-devel
-notes
-.catkin_workspace
-.vscode
-*.weights
-result
-src/adaptive_fusion
-src/CMakeLists.txt
