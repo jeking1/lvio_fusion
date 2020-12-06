@@ -7,11 +7,13 @@
 #include "lvio_fusion/imu/initializer.h"
 #include "lvio_fusion/map.h"
 #include "lvio_fusion/visual/camera.hpp"
+#include "lvio_fusion/DynamicExtractor.h"
 
 namespace lvio_fusion
 {
 
 class Backend;
+class DynamicExtractor;
 
 enum class FrontendStatus
 {
@@ -104,6 +106,8 @@ private:
     int num_features_tracking_;
     int num_features_tracking_bad_;
     int num_features_needed_for_keyframe_;
+
+	DynamicExtractor* mask_extractor;
 };
 
 } // namespace lvio_fusion

@@ -7,7 +7,6 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/PointCloud2.h>
 
-#include "lvio_fusion/adapt/agent.h"
 #include "lvio_fusion/common.h"
 #include "lvio_fusion/estimator.h"
 #include "object_detector/BoundingBoxes.h"
@@ -154,6 +153,7 @@ void sync_process()
                 if (obj_buf != nullptr)
                 {
                     auto objects = get_objects_from_msg(obj_buf);
+                    obj_buf;
                     // DEBUG
                     // for (auto object : objects)
                     // {
@@ -295,7 +295,6 @@ int main(int argc, char **argv)
         ROS_INFO("load config_file: %s\n", config_file.c_str());
     }
     read_parameters(config_file);
-    Agent::SetCore(new Core());
     estimator = Estimator::Ptr(new Estimator(config_file));
     assert(estimator->Init(use_imu, use_lidar, use_navsat, use_loop, is_semantic) == true);
     estimator->frontend->flags = get_flags();

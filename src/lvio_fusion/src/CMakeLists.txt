@@ -1,9 +1,9 @@
 add_library(lvio_fusion SHARED
-        agent.cpp
         association.cpp
         atlas.cpp
         backend.cpp
         config.cpp
+        DynamicExtractor.cpp
         estimator.cpp
         frame.cpp
         frontend.cpp

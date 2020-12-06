@@ -53,36 +53,33 @@ void publish_odometry(Estimator::Ptr estimator, double time)
 
 void publish_navsat(Estimator::Ptr estimator, double time)
 {
-    auto navsat = estimator->map->navsat_map;
-    if (navsat->initialized)
+    if (estimator->map->navsat_map->initialized)
     {
         if (navsat_path.poses.size() == 0)
         {
-            for (auto pair : navsat->raw)
+            for (auto pair_mp : estimator->map->navsat_map->navsat_points)
             {
+                NavsatPoint point = pair_mp.second;
                 geometry_msgs::PoseStamped pose_stamped;
-                Vector3d point = navsat->GetPoint(pair.first);
-                pose_stamped.header.stamp = ros::Time(pair.first);
-                pose_stamped.header.frame_id = "world";
-                pose_stamped.pose.position.x = point.x();
-                pose_stamped.pose.position.y = point.y();
-                pose_stamped.pose.position.z = point.z();
+                pose_stamped.header.stamp = ros::Time(point.time);
+                pose_stamped.header.frame_id = "navsat";
+                pose_stamped.pose.position.x = point.position.x();
+                pose_stamped.pose.position.y = point.position.y();
+                pose_stamped.pose.position.z = point.position.z();
                 navsat_path.poses.push_back(pose_stamped);
             }
         }
         else
         {
             geometry_msgs::PoseStamped pose_stamped;
-            Vector3d point = navsat->GetPoint((--navsat->raw.end())->first);
-            pose_stamped.header.stamp = ros::Time(time);
-            pose_stamped.header.frame_id = "world";
-            pose_stamped.pose.position.x = point.x();
-            pose_stamped.pose.position.y = point.y();
-            pose_stamped.pose.position.z = point.z();
+            NavsatPoint point = (--estimator->map->navsat_map->navsat_points.end())->second;
+            pose_stamped.pose.position.x = point.position.x();
+            pose_stamped.pose.position.y = point.position.y();
+            pose_stamped.pose.position.z = point.position.z();
             navsat_path.poses.push_back(pose_stamped);
         }
         navsat_path.header.stamp = ros::Time(time);
-        navsat_path.header.frame_id = "world";
+        navsat_path.header.frame_id = "navsat";
         pub_navsat.publish(navsat_path);
     }
 }

@@ -5,8 +5,12 @@
 #include "lvio_fusion/utility.h"
 #include "lvio_fusion/visual/feature.h"
 #include "lvio_fusion/visual/landmark.h"
+#include "lvio_fusion/DynamicExtractor.h"
+#include <iostream>
 
 #include <opencv2/core/eigen.hpp>
+
+using namespace std;
 
 namespace lvio_fusion
 {
@@ -15,6 +19,9 @@ Frontend::Frontend(int num_features, int init, int tracking, int tracking_bad, i
     : num_features_(num_features), num_features_init_(init), num_features_tracking_(tracking),
       num_features_tracking_bad_(tracking_bad), num_features_needed_for_keyframe_(need_for_keyframe)
 {
+	cout<<"初始化mask"<<endl;
+	mask_extractor = new DynamicExtractor("/home/garriton/lvio_fusion-main-dynamic-v1/src/lvio_fusion/ModelsCNN/");
+	cout<<"结束初始化mask"<<endl;
 }
 
 bool Frontend::AddFrame(lvio_fusion::Frame::Ptr frame)
@@ -266,6 +273,9 @@ bool Frontend::InitMap()
 int Frontend::DetectNewFeatures()
 {
     cv::Mat mask(current_frame->image_left.size(), CV_8UC1, 255);
+    cout<<"运行mask"<<endl;
+    mask_extractor->extractMask(current_frame->image_left, mask);
+    cout<<"mask结束"<<endl;
     for (auto pair_feature : current_frame->features_left)
     {
         auto feature = pair_feature.second;

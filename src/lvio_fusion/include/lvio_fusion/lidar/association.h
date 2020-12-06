@@ -1,7 +1,6 @@
 #ifndef lvio_fusion_REGISTRATION_H
 #define lvio_fusion_REGISTRATION_H
 
-#include "lvio_fusion/adapt/problem.h"
 #include "lvio_fusion/common.h"
 #include "lvio_fusion/lidar/lidar.hpp"
 #include "lvio_fusion/lidar/projection.h"
@@ -37,10 +36,10 @@ public:
 
     void AddScan(double time, Point3Cloud::Ptr new_scan);
 
-    void ScanToMapWithGround(Frame::Ptr frame, Frame::Ptr map_frame, double* para, adapt::Problem &problem);
+    void ScanToMapWithGround(Frame::Ptr frame, Frame::Ptr map_frame, double* para, ceres::Problem &problem);
 
-    void ScanToMapWithSegmented(Frame::Ptr frame, Frame::Ptr map_frame, double* para, adapt::Problem &problem);
-    void SegmentGround(PointICloud& points_ground);
+    void ScanToMapWithSegmented(Frame::Ptr frame, Frame::Ptr map_frame, double* para, ceres::Problem &problem);
+
 private:
     void UndistortPoint(PointI &point, Frame::Ptr frame);
     void UndistortPointCloud(PointICloud &points, Frame::Ptr frame);
@@ -59,7 +58,7 @@ private:
 
     void ExtractFeatures(PointICloud &points_segmented, SegmentedInfo &segemented_info, Frame::Ptr frame);
 
-    void Sensor2Robot(PointICloud& in, PointICloud& out);
+    void SegmentGround(PointICloud& points_ground, PointICloud& points_surf);
 
     Map::Ptr map_;
     ImageProjection::Ptr projection_;

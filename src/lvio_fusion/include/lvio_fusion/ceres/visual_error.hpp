@@ -25,12 +25,8 @@ inline void Reprojection(const T *pw, const T *Twc, Camera::Ptr camera, T *resul
 class PoseOnlyReprojectionError
 {
 public:
-    PoseOnlyReprojectionError(Vector2d ob, Vector3d pw, Camera::Ptr camera, double *weights)
-        : ob_(ob), pw_(pw), camera_(camera)
-    {
-        weights_[0] = weights[0];
-        weights_[1] = weights[1];
-    }
+    PoseOnlyReprojectionError(Vector2d ob, Vector3d pw, Camera::Ptr camera, double* weights)
+        : ob_(ob), pw_(pw), camera_(camera), weights_(weights) {}
 
     template <typename T>
     bool operator()(const T *Twc, T *residuals) const
@@ -44,7 +40,7 @@ public:
         return true;
     }
 
-    static ceres::CostFunction *Create(Vector2d ob, Vector3d pw, Camera::Ptr camera, double *weights)
+    static ceres::CostFunction *Create(Vector2d ob, Vector3d pw, Camera::Ptr camera, double* weights)
     {
         return (new ceres::AutoDiffCostFunction<PoseOnlyReprojectionError, 2, 7>(
             new PoseOnlyReprojectionError(ob, pw, camera, weights)));
@@ -54,18 +50,14 @@ private:
     Vector2d ob_;
     Vector3d pw_;
     Camera::Ptr camera_;
-    double weights_[2];
+    const double *weights_;
 };
 
 class TwoFrameReprojectionError
 {
 public:
-    TwoFrameReprojectionError(Vector3d pr, Vector2d ob, Camera::Ptr camera, double *weights)
-        : pr_(pr), ob_(ob), camera_(camera)
-    {
-        weights_[0] = weights[0];
-        weights_[1] = weights[1];
-    }
+    TwoFrameReprojectionError(Vector3d pr, Vector2d ob, Camera::Ptr camera, double* weights)
+        : pr_(pr), ob_(ob), camera_(camera), weights_(weights) {}
 
     template <typename T>
     bool operator()(const T *Twc1, const T *Twc2, T *residuals) const
@@ -80,7 +72,7 @@ public:
         return true;
     }
 
-    static ceres::CostFunction *Create(Vector3d pr, Vector2d ob, Camera::Ptr camera, double *weights)
+    static ceres::CostFunction *Create(Vector3d pr, Vector2d ob, Camera::Ptr camera, double* weights)
     {
         return (new ceres::AutoDiffCostFunction<TwoFrameReprojectionError, 2, 7, 7>(
             new TwoFrameReprojectionError(pr, ob, camera, weights)));
@@ -90,7 +82,7 @@ private:
     Vector3d pr_;
     Vector2d ob_;
     Camera::Ptr camera_;
-    double weights_[2];
+    const double* weights_;
 };
 
 } // namespace lvio_fusion

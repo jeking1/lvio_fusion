@@ -10,23 +10,17 @@ namespace lvio_fusion
 class PoseGraphError
 {
 public:
-    PoseGraphError(SE3d last_frame, SE3d frame, double *weights)
+    PoseGraphError(SE3d last_frame, SE3d frame, double *weights) : weights_(weights)
     {
-        se32rpyxyz(frame * last_frame.inverse(), rpyxyz_);
-        weights_[0] = weights[0];
-        weights_[1] = weights[1];
-        weights_[2] = weights[2];
-        weights_[3] = weights[3];
-        weights_[4] = weights[4];
-        weights_[5] = weights[5];
+        se32rpyxyz(last_frame * frame.inverse(), rpyxyz_);
     }
 
     template <typename T>
-    bool operator()(const T *Twc1, const T *Twc2, T *residuals) const
+    bool operator()(const T *Tcw1, const T *Tcw2, T *residuals) const
     {
-        T relative_i_j[7], Twc1_inverse[7], rpyxyz[6];
-        ceres::SE3Inverse(Twc1, Twc1_inverse);
-        ceres::SE3Product(Twc2, Twc1_inverse, relative_i_j);
+        T relative_i_j[7], Tcw2_inverse[7], rpyxyz[6];
+        ceres::SE3Inverse(Tcw2, Tcw2_inverse);
+        ceres::SE3Product(Tcw1, Tcw2_inverse, relative_i_j);
         ceres::SE3ToRpyxyz(relative_i_j, rpyxyz);
         residuals[0] = T(weights_[0]) * (rpyxyz[0] - rpyxyz_[0]);
         residuals[1] = T(weights_[1]) * (rpyxyz[1] - rpyxyz_[1]);
@@ -45,28 +39,25 @@ public:
 
 private:
     double rpyxyz_[6];
-    double weights_[6];
+    const double *weights_;
 };
 
 class PoseErrorRPZ
 {
 public:
-    PoseErrorRPZ(const double *rpyxyz, double *weights)
+    PoseErrorRPZ(const double *rpyxyz, double *weights) : weights_(weights)
     {
         r_ = rpyxyz[1];
         p_ = rpyxyz[2];
         z_ = rpyxyz[5];
-        weights_[0] = weights[1];
-        weights_[1] = weights[2];
-        weights_[2] = weights[5];
     }
 
     template <typename T>
     bool operator()(const T *r, const T *p, const T *z, T *residuals) const
     {
-        residuals[0] = T(weights_[0]) * (r[0] - T(r_));
-        residuals[1] = T(weights_[1]) * (p[0] - T(p_));
-        residuals[2] = T(weights_[2]) * (z[0] - T(z_));
+        residuals[0] = T(weights_[1]) * (r[0] - T(r_));
+        residuals[1] = T(weights_[2]) * (p[0] - T(p_));
+        residuals[2] = T(weights_[5]) * (z[0] - T(z_));
         return true;
     }
 
@@ -78,28 +69,25 @@ public:
 
 private:
     double r_, p_, z_;
-    double weights_[3];
+    const double *weights_;
 };
 
 class PoseErrorYXY
 {
 public:
-    PoseErrorYXY(const double *rpyxyz, double *weights)
+    PoseErrorYXY(const double *rpyxyz, double *weights) : weights_(weights)
     {
         Y_ = rpyxyz[0];
         x_ = rpyxyz[3];
         y_ = rpyxyz[4];
-        weights_[0] = weights[0];
-        weights_[1] = weights[3];
-        weights_[2] = weights[4];
     }
 
     template <typename T>
     bool operator()(const T *Y, const T *x, const T *y, T *residuals) const
     {
         residuals[0] = T(weights_[0]) * (Y[0] - T(Y_));
-        residuals[1] = T(weights_[1]) * (x[0] - T(x_));
-        residuals[2] = T(weights_[2]) * (y[0] - T(y_));
+        residuals[1] = T(weights_[3]) * (x[0] - T(x_));
+        residuals[2] = T(weights_[4]) * (y[0] - T(y_));
         return true;
     }
 
@@ -111,7 +99,7 @@ public:
 
 private:
     double Y_, x_, y_;
-    double weights_[3];
+    const double *weights_;
 };
 
 } // namespace lvio_fusion

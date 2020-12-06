@@ -1,0 +1,2 @@
+set(object_detector_MESSAGE_FILES "/home/garriton/lvio_fusion-main-dynamic-v1/src/object_detector/msg/BoundingBox.msg;/home/garriton/lvio_fusion-main-dynamic-v1/src/object_detector/msg/BoundingBoxes.msg")
+set(object_detector_SERVICE_FILES "")
