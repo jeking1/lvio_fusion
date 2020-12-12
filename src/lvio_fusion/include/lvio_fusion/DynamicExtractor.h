@@ -26,7 +26,7 @@ namespace lvio_fusion
     public:
         // need model location to load the model
         // only supports mask-rcnn for now
-        DynamicExtractor(const std::string &strModelPath, int maxUsage=1, bool useOpticalFlow=false,
+        DynamicExtractor(const std::string &strModelPath, int maxUsage=1, bool useOpticalFlow=true,
                          float confThreshold = 0.5, float maskThreshold = 0.3);
 
         // compute dynamic mask for given frame

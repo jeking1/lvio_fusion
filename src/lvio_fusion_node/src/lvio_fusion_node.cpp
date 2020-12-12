@@ -177,7 +177,8 @@ void sync_process()
                 m_img_buf.unlock();
                 estimator->InputImage(time, image0, image1);
             }
-            publish_car_model(estimator, time);
+            publish_car_model(estimator, time, car_model_path);
+			//write_result(estimator, time);
         }
 
         chrono::milliseconds dura(2);

@@ -10,7 +10,7 @@ extern string IMU_TOPIC;
 extern string LIDAR_TOPIC;
 extern string NAVSAT_TOPIC;
 extern string IMAGE0_TOPIC, IMAGE1_TOPIC;
-extern string result_path;
+extern string result_path, car_model_path;
 extern int use_imu;
 extern int use_lidar;
 extern int use_navsat;

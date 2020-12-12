@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(lvio_fusion_node)
 
 set(CMAKE_BUILD_TYPE Debug)
+set(cv_bridge_DIR /usr/local/share/cv_bridge/cmake)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 

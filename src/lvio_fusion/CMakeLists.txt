@@ -19,7 +19,9 @@ find_package(PCL REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
 
 # OpenCV
-find_package(OpenCV REQUIRED)
+set(cv_bridge_DIR /usr/local/share/cv_bridge/cmake)
+SET(OpenCV_DIR "/usr/local/share/OpenCV")
+find_package(OpenCV 3.4.12 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 # Ceres

@@ -54,12 +54,35 @@ bool Estimator::Init(int use_imu, int use_lidar, int use_navsat, int use_loop, i
     // create components and links
     map = Map::Ptr(new Map());
 
-    frontend = Frontend::Ptr(new Frontend(
-        Config::Get<int>("num_features"),
-        Config::Get<int>("num_features_init"),
-        Config::Get<int>("num_features_tracking"),
-        Config::Get<int>("num_features_tracking_bad"),
-        Config::Get<int>("num_features_needed_for_keyframe")));
+	bool use_dynamic = Config::Get<bool>("use_dynamic");
+
+	if (use_dynamic) {
+		frontend = Frontend::Ptr(new Frontend(
+			Config::Get<int>("num_features"),
+			Config::Get<int>("num_features_init"),
+			Config::Get<int>("num_features_tracking"),
+			Config::Get<int>("num_features_tracking_bad"),
+			Config::Get<int>("num_features_needed_for_keyframe"),
+			use_dynamic,
+			Config::Get<int>("num_new_freature_skip"),
+			Config::Get<std::string>("dynamic_model_path")));
+	}
+	else {
+		frontend = Frontend::Ptr(new Frontend(
+			Config::Get<int>("num_features"),
+			Config::Get<int>("num_features_init"),
+			Config::Get<int>("num_features_tracking"),
+			Config::Get<int>("num_features_tracking_bad"),
+			Config::Get<int>("num_features_needed_for_keyframe")));
+	}
+  //  frontend = Frontend::Ptr(new Frontend(
+  //      Config::Get<int>("num_features"),
+  //      Config::Get<int>("num_features_init"),
+  //      Config::Get<int>("num_features_tracking"),
+  //      Config::Get<int>("num_features_tracking_bad"),
+  //      Config::Get<int>("num_features_needed_for_keyframe"),
+		//Config::Get<int>("num_new_freature_skip"),
+		//Config::Get<std::string>("dynamic_model_path")));
 
     backend = Backend::Ptr(new Backend(
         Config::Get<double>("delay")));

@@ -11,7 +11,6 @@ namespace lvio_fusion
                                                                                    confThreshold(confThreshold),
                                                                                    maskThreshold(maskThreshold),
                                                                                    useOpticalFlow(useOpticalFlow){
-        cout<<"maks中初始化开始"<<endl;
         maskUsage = 0;
         string textGraph = strModelPath + "mask_rcnn_inception_v2_coco_2018_01_28.pbtxt";
         string modelWeights = strModelPath +  "frozen_inference_graph.pb";
@@ -32,30 +31,18 @@ namespace lvio_fusion
         net.setPreferableBackend(DNN_BACKEND_OPENCV);
         // should be able to use intel GPU
         net.setPreferableTarget(DNN_TARGET_OPENCL);
-        cout<<"maks中初始化结束"<<endl;
 
     }
 
     Mat DynamicExtractor::extractMask(const Mat &frame) {
-        cout<<"maks中extract开始"<<endl;
-        //Mat blob;
-        // Create 4D blob from a frame as input
-        cout<<"maks中blobFromImage开始"<<endl;
-        //imshow("maks中blobFromImage开始", frame);
-        //waitKey(0);
+		cout << "forward mask-rcnn" << endl;
         Mat blob = blobFromImage(frame, 1.0, Size(frame.cols, frame.rows), Scalar(), true, false);
-        cout<<"maks中setInput开始"<<endl;
-        //cout<<frame.cols<<endl;
-        //cout<<frame.rows<<endl;
-        //cout<<blob.size()<<endl;
         net.setInput(blob);
 
         // Runs the forward pass to get output from the output layers
         std::vector<String> outNames{"detection_out_final", "detection_masks"};
         vector<Mat> outs;
-        cout<<"maks中net.forward开始"<<endl;
         net.forward(outs, outNames);
-        cout<<"maks中net.forward结束"<<endl;
         Mat outDetections = outs[0];
         Mat outMasks = outs[1];
 
@@ -70,9 +57,7 @@ namespace lvio_fusion
         const int numDetections = outDetections.size[2];
         // reshape to channel = 1, row = num of detections
         // now outDetection size is numDetections * 7
-        cout<<"mask里面的reshape开始"<<endl;
         outDetections = outDetections.reshape(1, outDetections.total() / 7);
-        cout<<"mask里面的reshape结束"<<endl;
 
         // aggregate binary mask of dynamic objects into dynamic_mask
         // dynamic part should be zero
@@ -110,25 +95,24 @@ namespace lvio_fusion
                 }
             }
         }
-        cout<<"maks中extract结束"<<endl;
         return dynamic_mask;
     }
 
     void DynamicExtractor::extractMask(const Mat &frame, Mat &dynamic_mask) {
-        //// if maskUsage <= masUsage, resuse prevMask
-        //if (prevMask.empty() || maskUsage >= maxUsage) {
-        //    prevFrame = frame.clone();
-        //    prevMask = extractMask(frame);
-        //    dynamic_mask = prevMask.clone();
-        //    maskUsage = 0;
-        //} else if (useOpticalFlow) {
-        //    cv::Mat flow;
-        //    calcOpticalFlowFarneback(frame, prevFrame, flow, 0.5, 3, 20, 3, 5, 1.2, 0);
-        //    propagate_mask(prevMask, dynamic_mask, flow);
-        //} else {
-        //    dynamic_mask = prevMask.clone();
-        //}
-        //maskUsage++;
-		dynamic_mask = extractMask(frame);
+        // if maskUsage <= masUsage, resuse prevMask
+        if (prevMask.empty() || maskUsage >= maxUsage) {
+            prevFrame = frame.clone();
+            prevMask = extractMask(frame);
+            dynamic_mask = prevMask.clone();
+            maskUsage = 0;
+        } else if (useOpticalFlow) {
+            cv::Mat flow;
+            calcOpticalFlowFarneback(frame, prevFrame, flow, 0.5, 3, 20, 3, 5, 1.2, 0);
+            propagate_mask(prevMask, dynamic_mask, flow);
+        } else {
+            dynamic_mask = prevMask.clone();
+        }
+        maskUsage++;
+		//dynamic_mask = extractMask(frame);
     }
 }

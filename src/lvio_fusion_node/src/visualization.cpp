@@ -123,7 +123,7 @@ void publish_point_cloud(Estimator::Ptr estimator, double time)
     pub_points_cloud.publish(ros_cloud);
 }
 
-void publish_car_model(Estimator::Ptr estimator, double time)
+void publish_car_model(Estimator::Ptr estimator, double time, std::string car_model_path)
 {
     visualization_msgs::Marker car_mesh;
     car_mesh.header.stamp = ros::Time(time);
@@ -131,7 +131,7 @@ void publish_car_model(Estimator::Ptr estimator, double time)
     car_mesh.type = visualization_msgs::Marker::MESH_RESOURCE;
     car_mesh.action = visualization_msgs::Marker::ADD;
     // car_mesh.mesh_resource = "package://lvio_fusion_node/models/car.dae";
-    car_mesh.mesh_resource = "file:///home/jyp/Projects/lvio_fusion/src/lvio_fusion_node/models/car.dae";
+    car_mesh.mesh_resource = car_model_path.c_str();
     car_mesh.id = 0;
 
     SE3d pose = estimator->frontend->current_frame->pose;

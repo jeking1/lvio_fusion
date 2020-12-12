@@ -9,6 +9,7 @@
 #include "lvio_fusion/visual/camera.hpp"
 #include "lvio_fusion/DynamicExtractor.h"
 
+
 namespace lvio_fusion
 {
 
@@ -42,7 +43,7 @@ class Frontend
 public:
     typedef std::shared_ptr<Frontend> Ptr;
 
-    Frontend(int num_features, int init, int tracking, int tracking_bad, int need_for_keyframe);
+    Frontend(int num_features, int init, int tracking, int tracking_bad, int need_for_keyframe, bool use_dy=false, int num_new_freature_skip=1, std::string dynamic_model_path="");
 
     bool AddFrame(Frame::Ptr frame);
 
@@ -108,6 +109,7 @@ private:
     int num_features_needed_for_keyframe_;
 
 	DynamicExtractor* mask_extractor;
+	bool use_dynamic;
 };
 
 } // namespace lvio_fusion

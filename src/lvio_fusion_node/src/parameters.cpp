@@ -4,7 +4,7 @@ string IMU_TOPIC;
 string LIDAR_TOPIC;
 string NAVSAT_TOPIC;
 string IMAGE0_TOPIC, IMAGE1_TOPIC;
-string result_path;
+string result_path, car_model_path;
 int use_imu, use_lidar, num_of_cam, use_navsat, use_loop, is_semantic;
 
 void read_parameters(string config_file)
@@ -31,6 +31,7 @@ void read_parameters(string config_file)
     fsSettings["num_of_cam"] >> num_of_cam;
     fsSettings["is_semantic"] >> is_semantic;
     fsSettings["result_path"] >> result_path;
+	fsSettings["car_model_path"] >> car_model_path;
     if (num_of_cam == 2)
     {
         fsSettings["image0_topic"] >> IMAGE0_TOPIC;

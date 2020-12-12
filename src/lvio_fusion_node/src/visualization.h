@@ -30,6 +30,6 @@ void publish_point_cloud(Estimator::Ptr estimator, double time);
 
 void publish_tf(Estimator::Ptr estimator, double time);
 
-void publish_car_model(Estimator::Ptr estimator, double time);
+void publish_car_model(Estimator::Ptr estimator, double time, std::string car_model_path);
 
 #endif // lvio_fusion_VISUALIZATION_H

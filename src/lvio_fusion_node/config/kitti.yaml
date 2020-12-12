@@ -7,6 +7,7 @@ use_navsat: 0
 use_loop: 0             # 0 for only odometry, 1 for whole system
 num_of_cam: 2
 is_semantic: 0
+use_dynamic: 1         #0 for no dynamic-extractor, 1 for use dynamic-extractor
 
 # ros parameters
 imu_topic: '/kitti/oxts/imu'
@@ -15,7 +16,7 @@ navsat_topic: '/kitti/oxts/gps/fix'
 image0_topic: '/kitti/camera_gray_left/image_raw'
 image1_topic: '/kitti/camera_gray_right/image_raw'
 color_topic: '/kitti/camera_color_left/image_raw'
-result_path: '/home/jyp/Projects/lvio-fusion/result/result.csv'
+result_path: '/home/garriton/lvio_fusion-main-dynamic-v1/result/kitti-result-use-dynamic.csv'
 
 # camera1 intrinsics
 camera1.fx: 7.188560000000e+02
@@ -85,8 +86,17 @@ num_features_tracking: 120
 num_features_tracking_bad: 8
 num_features_needed_for_keyframe: 120
 
+#num of dynamic extract skip frames
+num_new_freature_skip: 10
+
 # backend
 delay: 3
 
 # loop
-voc_path: '/home/jyp/Projects/lvio_fusion/misc/orbvoc.dbow3'
+voc_path: '/home/garriton/lvio_fusion-main-dynamic-v1/misc/orbvoc.dbow3'
+
+#car model
+car_model_path: 'file:///home/garriton/lvio_fusion-main-dynamic-v1/src/lvio_fusion_node/models/car.dae'
+
+#maskcnn model path
+dynamic_model_path: '/home/garriton/lvio_fusion-main-dynamic-v1/src/lvio_fusion/ModelsCNN/'
