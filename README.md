@@ -6,7 +6,7 @@
 
 由于ros会自动调用自带的OpenCv3.2.0，需按照以下流程重新安装cv_bridge：
 
-[ros中opencv版本问题]:https://blog.csdn.net/qq_38589460/article/details/88756701
+[ros中opencv版本问题](https://blog.csdn.net/qq_38589460/article/details/88756701)
 
 2. #### 运行
 
